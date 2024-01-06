@@ -1,0 +1,38 @@
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'com.jrandrews.jdbcdemo.Main'
+}
+
+project.configurations.implementation.setCanBeResolved(true)
+
+dependencies {
+    implementation group: 'org.apache.sshd', name: 'sshd-core', version: '2.11.0'
+    implementation 'org.slf4j:slf4j-api:2.0.10'
+    implementation 'ch.qos.logback:logback-classic:1.4.6'
+    /*
+     * Note: </b> <i>ojdbc8-production </i> will download Oracle JDBC driver (<code class="ocode">ojdbc8.jar </code>) along
+     * with other companion jars such as <code class="ocode">ucp.jar </code> (It is a jar required for using UCP as a client
+     * side connection pool), <code class="ocode"> oraclepki.jar, osdt_core.jar, osdt_cert.jar </code> (These jars are required
+     * for using Oracle Wallets while connecting to Autonomous Database) etc., Refer to
+     * <a href="/database/technologies/maven-central-guide.html"> Maven Central Guide </a>for more details.
+     */
+    implementation 'com.oracle.database.jdbc:ojdbc11-production:23.3.0.23.09'
+}
+
+run {
+    standardInput = System.in
+}
+
+jar {
+  manifest {
+    attributes(
+      'Class-Path': configurations.implementation.collect { it.name }.join(' '),
+      'Main-Class': 'com.jrandrews.jdbcdemo.Main'
+    )
+  }
+}
