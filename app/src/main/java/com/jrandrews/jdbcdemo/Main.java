@@ -11,8 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
+    public static final String ANSI_RESET = "\u001B[0m";
+
+    public static final String ANSI_BOLD = "\u001B[1m";
+    public static final String ANSI_WHITE_FG = "\u001B[37m";
+    public static final String ANSI_BLACK_BG = "\u001B[40m";
+
+    public static final String ANSI_BOLD_WHITE_ON_BLACK = ANSI_BOLD + ANSI_WHITE_FG + ANSI_BLACK_BG;
+
     // prevents Oracle ojdbc11's SAX parser from being picked up by the logging framework, causing an exception.
-    // workaround for this issue: https://jira.qos.ch/browse/LOGBACK-1577 
+    // workaround for this issue: https://jira.qos.ch/browse/LOGBACK-1577
     static {
         System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
     }
@@ -20,51 +28,18 @@ public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException, GeneralSecurityException, ClassNotFoundException, SQLException {
+        log.info("Attempting to connect to an Oracle 23c instance through an SSH tunnel.");
+
         try (Tunnel tunnel = new Tunnel()) {
             tunnel.start();
 
-            try (OracleDbDriver driver = new OracleDbDriver()) {
-                Connection conn = driver.getConnection();
-                Statement statement = conn.createStatement();
-                ResultSet rs = statement.executeQuery("select 'Hello'");
+            try (Connection conn = new OracleDbDriver().getConnection();
+                    Statement statement = conn.createStatement();
+                    ResultSet rs = statement.executeQuery("select 'Hello from Oracle 23c'")) {
                 while (rs.next()) {
-                    System.out.println(rs.getString(1));
-                }
-                rs.close();
-                statement.close();
-                conn.close();
-            }
-        }
-    }
-
-    private static void pressEnterToExit() {
-        System.out.println("press <enter> to exit (heh).");
-        for (int i = 0, c = 0; c != 10; ++i) {
-            boolean done = false;
-            // This could be done by delegating the whole outer loop to thread, and this to a different thread, and synchronizing,
-            // but I think this approach is a little more transparent.
-            while (!done) {
-                try {
-                    if (System.in.available() > 0)
-                        c = System.in.read();
-                } catch (IOException e) {
-                    // ignored
-                }
-
-                sleep(5);
-
-                if (c == 10) {
-                    done = true;
+                    log.info(ANSI_BOLD_WHITE_ON_BLACK + "   " + rs.getString(1) + "   " + ANSI_RESET);
                 }
             }
-        }
-    }
-
-    private static void sleep(long n) {
-        try {
-            Thread.sleep(n);
-        } catch (InterruptedException e) {
-            // no-op
         }
     }
 }

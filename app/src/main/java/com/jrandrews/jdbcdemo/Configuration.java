@@ -21,10 +21,10 @@ public class Configuration {
         ORACLE_DB_PORT("oracle_db_port"),
         ORACLE_DB_SID_OR_NAME("oracle_db_sid_or_name"),
         ORACLE_USERNAME("oracle_username"),
-        ORACLE_PASSWORD("oracle_password")
-        ;
+        ORACLE_PASSWORD("oracle_password");
 
         private String key;
+
         Item(String key) {
             this.key = key;
         }
@@ -33,13 +33,17 @@ public class Configuration {
             return this.key;
         }
     }
+
     public static final String PRIVATE_KEY_PATH = "";
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Properties properties;
+    private static Properties properties;
 
     public Configuration() {
+        if (properties != null) {
+            return;
+        }
         properties = new Properties();
         InputStream fs = this.getClass().getResourceAsStream("/configuration.properties");
         try {
@@ -56,7 +60,7 @@ public class Configuration {
     public String get(Item item) {
         return properties.getProperty(item.getKey());
     }
-    
+
     public int getInt(Item item) {
         return Integer.valueOf(get(item));
     }
