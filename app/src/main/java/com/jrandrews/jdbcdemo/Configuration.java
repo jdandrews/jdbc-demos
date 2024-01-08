@@ -1,8 +1,7 @@
 package com.jrandrews.jdbcdemo;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -42,11 +41,15 @@ public class Configuration {
 
     public Configuration() {
         properties = new Properties();
+        InputStream fs = this.getClass().getResourceAsStream("/configuration.properties");
         try {
-            properties.load(new FileInputStream("src/main/resources/configuration.properties"));
-        } catch (IOException e) {
-            File f = new File("src/main/resources/configuration.properties");
-            log.error("Unable to load configuration from " + f.getAbsolutePath() + ": ", e);
+            properties.load(fs);
+        } catch (NullPointerException | IOException e) {
+            if (fs == null) {
+                log.error("configuration.properties not found on the classpath", e);
+            } else {
+                log.error("unable to read configuration", e);
+            }
         }
     }
 

@@ -24,8 +24,6 @@ public class OracleDbDriver implements Closeable {
     private Connection connection = null;
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("oracle.jdbc.OracleDriver");
-
         Configuration config = new Configuration();
 
         if (connection == null) {
