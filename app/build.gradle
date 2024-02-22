@@ -11,7 +11,7 @@ application {
 project.configurations.implementation.setCanBeResolved(true)
 
 dependencies {
-    implementation group: 'org.apache.sshd', name: 'sshd-core', version: '2.11.0'
+    implementation group: 'org.apache.sshd', name: 'sshd-core', version: '2.12.1'
     implementation 'org.slf4j:slf4j-api:2.0.10'
     implementation 'ch.qos.logback:logback-classic:1.4.6'
     /*
