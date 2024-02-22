@@ -5,9 +5,11 @@ There are 2 techniques demonstrated here:
 1. opening an SSH tunnel and working through it, and
 2. connecting to an Oracle database which has a name (not a SID).
 
-Tunneling is not directly related to JDBC, but is a common requirement in real environments. The usual architecture is that
-you first open an SSH session to a bastion host, then you can open a regular TCP connection to the database host, which is 
-available on the bastion host's secondary network, but not the network your client is located on (see figure).
+Tunneling is not directly related to JDBC, but is a common requirement in real environments. (If you're not familiar with
+SSH tunnels, refer to [https://iximiuz.com/en/posts/ssh-tunnels/](https://iximiuz.com/en/posts/ssh-tunnels/), which is the
+best explanation I've seen in a while.) The usual architecture is that you first open an SSH session to a bastion host,
+then you can open a regular TCP connection to the database host, which is available on the bastion host's secondary network,
+but not the network your client is located on (see figure).
 
 ... put a figure here ...
 
